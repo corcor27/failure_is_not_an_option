@@ -8,8 +8,8 @@ PAR=${NAMEDIR}/parameters.txt
 # define coalescence time, observed masses, and waveform parameters
 TRIGGER_TIME=1126259462.0
 INJ_APPROX=IMRPhenomPv2threePointFivePN
-MASS1=15.
-MASS2=5.
+MASS1=10.
+MASS2=80.
 RA=2.21535724066
 DEC=-1.23649695537
 THETA_JN=2.7  ### <<---- this parameter is no longer relevant
@@ -24,12 +24,12 @@ TAPER="start"
 # Spin parameters
 MIN_SPIN1=0.75
 MAX_SPIN1=0.75
-#MIN_KAPPA1=0.0
-#MAX_KAPPA1=0.0
+MIN_KAPPA1=0.0
+MAX_KAPPA1=0.0
 MIN_SPIN2=0.0
 MAX_SPIN2=0.0
-#MIN_KAPPA2=0.0
-#MAX_KAPPA2=0.0
+MIN_KAPPA2=0.0
+MAX_KAPPA2=0.0
 
 # path of injection file that will be created in the example
 INJ_PATH=${NAMEDIR}/injection.xml.gz
@@ -54,7 +54,7 @@ N_ITERATIONS=12000
 N_CHECKPOINT=1000
 PROCESSING_SCHEME=cpu
 NPROCS=12
-CONFIG_PATH=inference.ini
+CONFIG_PATH=inference_individual.ini
 
 # get coalescence time as an integer
 TRIGGER_TIME_INT=${TRIGGER_TIME%.*}
@@ -81,15 +81,21 @@ lalapps_inspinj \
     --min-distance ${DISTANCE} \
     --max-distance ${DISTANCE} \
     --i-distr fixed \
-    --fixed-inc ${INC} \
+    --fixed-inc ${INC_inj} \
     --coa-phase-distr fixed \
-    --fixed-coa-phase ${COA_PHASE} \
-    --polarization ${POLARIZATION} \
+    --fixed-coa-phase ${COA_PHASE_inj} \
+    --polarization ${POLARIZATION_inj} \
     --m-distr fixMasses \
     --fixed-mass1 ${MASS1} \
     --fixed-mass2 ${MASS2} \
     --taper-injection ${TAPER} \
-    --disable-spin
+    --enable-spin \
+    --min-spin1 ${MIN_SPIN1} \
+    --max-spin1 ${MAX_SPIN1} \
+    --min-spin2 ${MIN_SPIN2} \
+    --max-spin2 ${MAX_SPIN2} \
+    --min-kappa1 ${MIN_KAPPA1} \
+    --max-kappa1 ${MAX_KAPPA1} \
 
 # Output parameters as text file
 printf "Injection approximant = ${INJ_APPROX} \n" > ${PAR}
@@ -108,12 +114,12 @@ printf "Sampler min frequency = ${F_MIN} \n" >> ${PAR}
 printf " \nSpin parameters: \n" >> ${PAR}
 printf "Spin1 min = ${MIN_SPIN1} \n" >> ${PAR}
 printf "Spin1 max = ${MAX_SPIN1} \n" >> ${PAR}
-#printf "Spin1 min kappa = ${MIN_KAPPA1} \n" >> ${PAR}
-#printf "Spin1 max kappa = ${MAX_KAPPA1} \n" >> ${PAR}
+printf "Spin1 min kappa = ${MIN_KAPPA1} \n" >> ${PAR}
+printf "Spin1 max kappa = ${MAX_KAPPA1} \n" >> ${PAR}
 printf "Spin2 min = ${MIN_SPIN2} \n" >> ${PAR}
 printf "Spin2 max = ${MAX_SPIN2} \n" >> ${PAR}
-#printf "Spin2 min kappa = ${MIN_KAPPA2} \n" >> ${PAR}
-#printf "Spin2 max kappa = ${MAX_KAPPA2} \n" >> ${PAR}
+printf "Spin2 min kappa = ${MIN_KAPPA2} \n" >> ${PAR}
+printf "Spin2 max kappa = ${MAX_KAPPA2} \n" >> ${PAR}
 printf " \nSampler parameters: \n" >> ${PAR}
 printf "Number of walkers = ${N_WALKERS} \n" >> ${PAR}
 printf "Number of checkpoints = ${N_CHECKPOINT} \n" >> ${PAR}
